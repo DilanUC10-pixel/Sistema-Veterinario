@@ -1,0 +1,75 @@
+<main class="max-w-6xl mx-auto px-4 py-8 flex flex-col gap-12">
+
+  <!-- Hero -->
+  <section class="bg-hoja rounded-3xl p-8 md:p-10 grid md:grid-cols-2 gap-8 items-center">
+    <div class="flex flex-col gap-6">
+      <p class="text-[11px] font-semibold tracking-wide uppercase text-bosque-oscuro">
+        Adopciones responsables · Cuidado continuo
+      </p>
+
+      <h1 class="font-serif text-4xl md:text-5xl leading-tight text-bosque-oscuro">
+        Un nuevo hogar.<br />Toda una vida por cuidar.
+      </h1>
+
+      <p class="text-gray-600 max-w-md">
+        En Patitas conectamos animales con nuevos hogares y acompañamos su salud.
+        Gestiona las adopciones y el seguimiento veterinario en un solo lugar.
+      </p>
+
+      <div class="flex items-center gap-4 flex-wrap">
+        <a href="#mascotas"
+           class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-bosque text-white text-sm font-semibold hover:bg-bosque-oscuro">
+          Conoce a tu compañero
+          <mat-icon class="!w-4 !h-4 !text-base">arrow_downward</mat-icon>
+        </a>
+        <span class="text-xs text-gray-500">Adopta con amor. Cuida para siempre.</span>
+      </div>
+    </div>
+
+    <div class="relative rounded-2xl overflow-hidden aspect-[4/3]">
+      <img src="mascotas/milo.jpg" alt="Milo" class="w-full h-full object-cover" />
+      <div class="absolute left-3 right-3 bottom-3 bg-white rounded-xl px-4 py-3">
+        <p class="text-sm font-semibold text-gray-900">Milo busca una familia como la tuya.</p>
+        <p class="text-xs text-gray-500">Un pequeño encuentro. Un gran comienzo.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mascotas -->
+  <section id="mascotas" class="flex flex-col gap-4">
+    <div>
+      <h2 class="font-serif text-3xl text-bosque-oscuro">Un amigo te está esperando</h2>
+      <p class="text-sm text-gray-600">Conoce a algunas de las mascotas de nuestro refugio.</p>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      @for (m of mascotas; track m.nombre) {
+        <article class="bg-white rounded-2xl overflow-hidden border border-gray-200">
+          <div class="relative aspect-[4/3]">
+            <img [src]="m.foto" [alt]="m.nombre" class="w-full h-full object-cover" />
+            <span class="absolute top-3 left-3 bg-white rounded-full px-3 py-1 text-xs font-medium text-gray-800">
+              En adopción
+            </span>
+          </div>
+
+          <div class="p-5 flex justify-between items-start">
+            <div>
+              <h3 class="text-xl font-semibold text-bosque-oscuro">{{ m.nombre }}</h3>
+              <p class="text-xs text-gray-500 mt-2">{{ m.detalle }}</p>
+              <p class="text-xs text-gray-500 mt-3">{{ m.descripcion }}</p>
+            </div>
+            <a routerLink="/app/mascotas-comp" class="text-bosque" aria-label="Ver más">
+              <mat-icon>north_east</mat-icon>
+            </a>
+          </div>
+        </article>
+      }
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="flex justify-between flex-wrap gap-2 text-xs text-gray-500 pb-6">
+    <span class="uppercase">Patitas · Adopciones y seguimiento veterinario</span>
+    <span>El cuidado no termina con la adopción.</span>
+  </footer>
+</main>

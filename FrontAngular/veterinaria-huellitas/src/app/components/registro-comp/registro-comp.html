@@ -1,0 +1,115 @@
+<div class="max-w-6xl mx-auto px-4 py-6 flex flex-col gap-6">
+
+  <a routerLink="/app/home-comp" class="text-sm text-bosque-oscuro">← Volver al inicio</a>
+
+  <section class="bg-white rounded-3xl overflow-hidden border border-gray-200 shadow-sm grid md:grid-cols-[2fr_3fr]">
+
+    <!-- Lado izquierdo -->
+    <aside class="bg-hoja p-8 md:p-10 flex flex-col gap-6 justify-between">
+      <div class="flex flex-col gap-5">
+        <p class="text-[11px] font-semibold tracking-wide uppercase text-bosque-oscuro">
+          Un nuevo comienzo, juntos
+        </p>
+        <h1 class="font-serif text-4xl leading-tight text-bosque-oscuro">
+          Una cuenta.<br />Muchas vidas<br />por cambiar.
+        </h1>
+        <p class="text-sm text-gray-600 max-w-xs">
+          Da el primer paso hacia una adopción responsable y acompaña su salud en cada etapa.
+        </p>
+      </div>
+
+      <img src="mascotas/bruno.jpg" alt="Bruno" class="w-full aspect-[16/9] object-cover rounded-2xl" />
+
+      <div>
+        <p class="font-serif text-xl text-bosque-oscuro">Más cerca de su próximo hogar.</p>
+        <p class="text-xs text-gray-500 mt-1">Adopciones · Solicitudes · Salud</p>
+      </div>
+    </aside>
+
+    <!-- Formulario -->
+    <form [formGroup]="form" (ngSubmit)="enviar()" class="p-8 md:p-10 flex flex-col gap-5">
+      <div>
+        <p class="text-[11px] font-semibold tracking-wide uppercase text-bosque-oscuro">Forma parte de Patitas</p>
+        <h2 class="font-serif text-4xl text-bosque-oscuro mt-3">Crea tu cuenta</h2>
+        <p class="text-sm text-gray-600 mt-3 max-w-sm">
+          Únete a Patitas para gestionar adopciones y el seguimiento veterinario.
+        </p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 gap-x-5 gap-y-4">
+
+        <label class="flex flex-col gap-1.5 text-sm font-medium text-bosque-oscuro">
+          Nombre
+          <input class="campo" formControlName="nombre" maxlength="100" placeholder="Tu nombre" />
+          @if (invalido('nombre')) { <span class="text-xs text-red-600">Requerido</span> }
+        </label>
+
+        <label class="flex flex-col gap-1.5 text-sm font-medium text-bosque-oscuro">
+          Apellido paterno
+          <input class="campo" formControlName="apellidoPaterno" maxlength="100" placeholder="Tu apellido paterno" />
+          @if (invalido('apellidoPaterno')) { <span class="text-xs text-red-600">Requerido</span> }
+        </label>
+
+        <label class="flex flex-col gap-1.5 text-sm font-medium text-bosque-oscuro">
+          Apellido materno
+          <input class="campo" formControlName="apellidoMaterno" maxlength="100" placeholder="Tu apellido materno" />
+          @if (invalido('apellidoMaterno')) { <span class="text-xs text-red-600">Requerido</span> }
+        </label>
+
+        <label class="flex flex-col gap-1.5 text-sm font-medium text-bosque-oscuro">
+          Teléfono
+          <input class="campo" type="tel" formControlName="telefono" maxlength="20" placeholder="Tu número de teléfono" />
+        </label>
+
+        <label class="flex flex-col gap-1.5 text-sm font-medium text-bosque-oscuro">
+          Correo electrónico
+          <input class="campo" type="email" formControlName="correo" maxlength="150" placeholder="tu@correo.com" />
+          @if (invalido('correo')) {
+            <span class="text-xs text-red-600">
+              {{ form.controls.correo.hasError('required') ? 'Requerido' : 'Correo inválido' }}
+            </span>
+          }
+        </label>
+
+        <label class="flex flex-col gap-1.5 text-sm font-medium text-bosque-oscuro">
+          Contraseña
+          <input class="campo" type="password" formControlName="contrasena" placeholder="Mínimo 8 caracteres" />
+          @if (invalido('contrasena')) {
+            <span class="text-xs text-red-600">
+              {{ form.controls.contrasena.hasError('required') ? 'Requerido' : 'Mínimo 8 caracteres' }}
+            </span>
+          }
+        </label>
+
+        <label class="flex flex-col gap-1.5 text-sm font-medium text-bosque-oscuro sm:col-span-2">
+          Dirección
+          <input class="campo" formControlName="direccion" maxlength="200"
+                 placeholder="Calle, número, ciudad y código postal" />
+        </label>
+      </div>
+
+      <p class="text-xs text-gray-500 max-w-xs">
+        Al registrarte, aceptas nuestros términos de servicio y el aviso de privacidad.
+      </p>
+
+      @if (error()) {
+        <p class="text-sm text-red-600 bg-red-50 rounded-lg px-4 py-2">{{ error() }}</p>
+      }
+
+      <button type="submit" [disabled]="enviando()"
+              class="w-full rounded-full bg-bosque text-white text-sm font-semibold py-3.5 hover:bg-bosque-oscuro disabled:opacity-60">
+        {{ enviando() ? 'Creando cuenta…' : 'Crear cuenta' }}
+      </button>
+
+      <p class="text-sm text-center text-bosque-oscuro">
+        ¿Ya tienes cuenta?
+        <a routerLink="/app/login" class="font-semibold underline">Inicia sesión</a>
+      </p>
+    </form>
+  </section>
+
+  <footer class="flex justify-between flex-wrap gap-2 text-xs text-gray-500">
+    <span class="uppercase">Patitas · Adopciones y seguimiento veterinario</span>
+    <span>El cuidado no termina con la adopción.</span>
+  </footer>
+</div>

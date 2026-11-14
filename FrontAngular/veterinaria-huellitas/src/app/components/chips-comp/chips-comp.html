@@ -1,0 +1,186 @@
+<div class="p-6 space-y-6">
+  <div>
+    <h1 class="text-2xl font-bold text-gray-800">Chips de rastreo</h1>
+    <p class="text-gray-500">Administra el inventario y consulta los chips aplicados</p>
+  </div>
+
+  <mat-tab-group animationDuration="0ms">
+    <mat-tab label="Inventario de chips">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-5">
+        <mat-card class="!rounded-xl h-fit">
+          <form #stockForm="ngForm" (ngSubmit)="guardarStock(stockForm)" novalidate>
+            <mat-card-header class="!p-4">
+              <mat-card-title>{{ editandoStock ? 'Editar chip' : 'Registrar chip' }}</mat-card-title>
+            </mat-card-header>
+            <mat-card-content class="flex flex-col gap-1">
+              <mat-form-field appearance="outline">
+                <mat-label>Código del chip</mat-label>
+                <input matInput name="codigoChip" [(ngModel)]="chipForm.codigoChip"
+                       required maxlength="100" />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Fabricante</mat-label>
+                <input matInput name="fabricante" [(ngModel)]="chipForm.fabricante" maxlength="100" />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Estado</mat-label>
+                <mat-select name="estadoStock" [(ngModel)]="chipForm.estado" required>
+                  <mat-option [value]="2">En stock (2)</mat-option>
+                  <mat-option [value]="1">Aplicado (1)</mat-option>
+                  <mat-option [value]="0">Eliminado (0)</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </mat-card-content>
+            <mat-card-actions class="!px-4 !pb-4 flex gap-2">
+              <button mat-flat-button type="submit">
+                {{ editandoStock ? 'Actualizar' : 'Guardar' }}
+              </button>
+              <button mat-stroked-button type="button" (click)="limpiarStockForm(stockForm)">
+                Limpiar
+              </button>
+            </mat-card-actions>
+          </form>
+        </mat-card>
+
+        <mat-card class="lg:col-span-2 !rounded-xl">
+          <mat-card-header class="!p-4">
+            <mat-card-title>Stock disponible</mat-card-title>
+          </mat-card-header>
+          <mat-card-content class="!pt-2">
+            <div class="overflow-x-auto">
+              <table mat-table [dataSource]="chipsStock" class="w-full">
+                <ng-container matColumnDef="codigoChip">
+                  <th mat-header-cell *matHeaderCellDef>Código</th>
+                  <td mat-cell *matCellDef="let chip">{{ chip.codigoChip }}</td>
+                </ng-container>
+                <ng-container matColumnDef="fabricante">
+                  <th mat-header-cell *matHeaderCellDef>Fabricante</th>
+                  <td mat-cell *matCellDef="let chip">{{ chip.fabricante || '—' }}</td>
+                </ng-container>
+                <ng-container matColumnDef="estado">
+                  <th mat-header-cell *matHeaderCellDef>Estado</th>
+                  <td mat-cell *matCellDef="let chip">
+                    <span class="font-semibold" [class.text-red-600]="chip.estado !== 2">
+                      {{ nombreEstadoStock(chip.estado) }}
+                    </span>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="acciones">
+                  <th mat-header-cell *matHeaderCellDef>Acciones</th>
+                  <td mat-cell *matCellDef="let chip">
+                    <button mat-icon-button type="button" aria-label="Editar chip" (click)="editarStock(chip)">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-icon-button type="button" aria-label="Retirar chip del inventario" (click)="eliminarStock(chip)">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="columnasStock"></tr>
+                <tr mat-row *matRowDef="let row; columns: columnasStock"></tr>
+              </table>
+            </div>
+            @if (chipsStock.length === 0) {
+              <p class="py-6 text-center text-gray-500">No hay chips registrados en el inventario.</p>
+            }
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Aplicar chip e historial">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-5">
+        <mat-card class="!rounded-xl h-fit">
+          <form #aplicacionFormRef="ngForm" (ngSubmit)="aplicarChip(aplicacionFormRef)" novalidate>
+            <mat-card-header class="!p-4">
+              <mat-card-title>Registrar aplicación</mat-card-title>
+            </mat-card-header>
+            <mat-card-content class="flex flex-col gap-1">
+              <mat-form-field appearance="outline">
+                <mat-label>Mascota</mat-label>
+                <mat-select name="idMascota" [(ngModel)]="aplicacionForm.idMascota"
+                            (selectionChange)="seleccionarMascota($event.value)" required>
+                  @for (mascota of mascotas; track mascota.id) {
+                    <mat-option [value]="mascota.id">{{ mascota.nombre }}</mat-option>
+                  }
+                </mat-select>
+                @if (mascotas.length === 0) {
+                  <mat-hint>No hay mascotas disponibles</mat-hint>
+                }
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Chip de rastreo</mat-label>
+                <mat-select name="idChipStock" [(ngModel)]="aplicacionForm.idChipStock" required>
+                  @for (chip of chipsStock; track chip.id) {
+                    @if (chip.estado === 2) {
+                      <mat-option [value]="chip.id">
+                        {{ chip.codigoChip }}{{ chip.fabricante ? ' · ' + chip.fabricante : '' }}
+                      </mat-option>
+                    }
+                  }
+                </mat-select>
+                @if (chipsStock.length === 0) {
+                  <mat-hint>Registra chips en el inventario primero</mat-hint>
+                } @else if (!hayChipDisponible) {
+                  <mat-hint>No hay chips disponibles para implantar</mat-hint>
+                }
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Fecha de implantación</mat-label>
+                <input matInput type="date" name="fechaImplantacion"
+                       [(ngModel)]="aplicacionForm.fechaImplantacion" required />
+              </mat-form-field>
+            </mat-card-content>
+            <mat-card-actions class="!px-4 !pb-4">
+              <button mat-flat-button type="submit">Aplicar y descontar stock</button>
+            </mat-card-actions>
+          </form>
+        </mat-card>
+
+        <mat-card class="lg:col-span-2 !rounded-xl">
+          <mat-card-header class="!p-4">
+            <mat-card-title>Historial de chips</mat-card-title>
+            @if (aplicacionForm.idMascota !== null) {
+              <mat-card-subtitle>{{ nombreMascotaSeleccionada() }}</mat-card-subtitle>
+            }
+          </mat-card-header>
+          <mat-card-content class="!pt-2">
+            @if (aplicacionForm.idMascota === null) {
+              <p class="py-6 text-center text-gray-500">Selecciona una mascota para consultar su historial.</p>
+            } @else if (cargandoHistorial) {
+              <p class="py-6 text-center text-gray-500">Cargando historial...</p>
+            } @else {
+              <div class="overflow-x-auto">
+                <table mat-table [dataSource]="historial" class="w-full">
+                  <ng-container matColumnDef="codigoChip">
+                    <th mat-header-cell *matHeaderCellDef>Código</th>
+                    <td mat-cell *matCellDef="let chip">{{ chip.codigoChip }}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="fabricante">
+                    <th mat-header-cell *matHeaderCellDef>Fabricante</th>
+                    <td mat-cell *matCellDef="let chip">{{ chip.fabricante || '—' }}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="fechaImplantacion">
+                    <th mat-header-cell *matHeaderCellDef>Fecha de implantación</th>
+                    <td mat-cell *matCellDef="let chip">
+                      {{ chip.fechaImplantacion ? (chip.fechaImplantacion | date:'mediumDate') : '—' }}
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="estado">
+                    <th mat-header-cell *matHeaderCellDef>Estado</th>
+                    <td mat-cell *matCellDef="let chip">{{ chip.estado === 1 ? 'Activo' : nombreEstadoStock(chip.estado) }}</td>
+                  </ng-container>
+                  <tr mat-header-row *matHeaderRowDef="columnasHistorial"></tr>
+                  <tr mat-row *matRowDef="let row; columns: columnasHistorial"></tr>
+                </table>
+              </div>
+              @if (historial.length === 0) {
+                <p class="py-6 text-center text-gray-500">Esta mascota aún no tiene chips aplicados.</p>
+              }
+            }
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

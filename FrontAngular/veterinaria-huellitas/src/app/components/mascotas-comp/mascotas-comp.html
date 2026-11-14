@@ -1,0 +1,276 @@
+<div class="space-y-6">
+
+  <!-- Encabezado -->
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-800">Mascotas</h1>
+      <p class="text-gray-500">Catálogo de mascotas en adopción</p>
+    </div>
+
+    <button mat-flat-button type="button" (click)="abrirNuevo()">
+      <mat-icon>add</mat-icon>
+      Nueva mascota
+    </button>
+  </div>
+
+  <!-- Tabla -->
+  <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+
+    <!-- Búsqueda por ID y filtro de estado -->
+    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 p-4">
+      <div class="flex w-full gap-2 sm:max-w-sm">
+        <div class="relative min-w-0 flex-1">
+          <mat-icon class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 !h-5 !w-5 !text-[20px] text-gray-400">search</mat-icon>
+          <input type="text" inputmode="numeric" pattern="[0-9]*"
+                 [(ngModel)]="busqueda"
+                 (ngModelChange)="limpiarBusqueda()"
+                 (keyup.enter)="buscar()"
+                 placeholder="ID de mascota"
+                 class="w-full rounded-full border border-gray-300 bg-gray-50 py-2.5 pl-10 pr-4 text-sm
+                        outline-none transition focus:border-bosque focus:bg-white focus:ring-2 focus:ring-bosque/20" />
+        </div>
+        <button mat-stroked-button type="button" (click)="buscar()">Buscar</button>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2">
+        @for (opcion of opcionesFiltro; track opcion.valor) {
+          <button type="button" (click)="filtrarEstado(opcion.valor)"
+                  class="rounded-full px-4 py-1.5 text-sm font-medium transition-colors"
+                  [class]="filtroEstado === opcion.valor
+                    ? 'bg-bosque text-white'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'">
+            {{ opcion.nombre }}
+          </button>
+        }
+        <span class="ml-2 text-sm text-gray-500">
+          {{ dataSource.filteredData.length }}
+          {{ dataSource.filteredData.length === 1 ? 'mascota' : 'mascotas' }}
+        </span>
+      </div>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table mat-table [dataSource]="dataSource" class="w-full">
+
+        <!-- Mascota (foto + nombre + especie y raza) -->
+        <ng-container matColumnDef="mascota">
+          <th mat-header-cell *matHeaderCellDef
+              class="!bg-gray-50 !text-xs !font-semibold uppercase tracking-wide !text-gray-500">
+            Mascota
+          </th>
+          <td mat-cell *matCellDef="let mascota" class="!py-3">
+            <div class="flex items-center gap-3">
+              @if (mascota.urlImagen) {
+                <img [src]="mascota.urlImagen" [alt]="mascota.nombre"
+                     class="h-11 w-11 shrink-0 rounded-xl object-cover" />
+              } @else {
+                <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-bosque/10 text-bosque-oscuro">
+                  <mat-icon>pets</mat-icon>
+                </div>
+              }
+              <div class="min-w-0">
+                <p class="truncate font-semibold text-gray-800">{{ mascota.nombre }}</p>
+                <p class="truncate text-sm text-gray-500">
+                  {{ mascota.especie }} · {{ mascota.raza || 'Sin raza' }}
+                </p>
+              </div>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Edad -->
+        <ng-container matColumnDef="edad">
+          <th mat-header-cell *matHeaderCellDef
+              class="!bg-gray-50 !text-xs !font-semibold uppercase tracking-wide !text-gray-500">
+            Edad
+          </th>
+          <td mat-cell *matCellDef="let mascota" class="text-gray-700">
+            {{ mascota.edad === null ? '—' : mascota.edad + (mascota.edad === 1 ? ' año' : ' años') }}
+          </td>
+        </ng-container>
+
+        <!-- Sexo -->
+        <ng-container matColumnDef="sexo">
+          <th mat-header-cell *matHeaderCellDef
+              class="!bg-gray-50 !text-xs !font-semibold uppercase tracking-wide !text-gray-500">
+            Sexo
+          </th>
+          <td mat-cell *matCellDef="let mascota">
+            <span class="inline-flex items-center gap-1 text-gray-700">
+              <mat-icon class="!h-4 !w-4 !text-[16px] text-gray-400">
+                {{ mascota.sexo === 0 ? 'male' : mascota.sexo === 1 ? 'female' : 'remove' }}
+              </mat-icon>
+              {{ nombreSexo(mascota.sexo) }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Adoptante / refugio -->
+        <ng-container matColumnDef="adoptante">
+          <th mat-header-cell *matHeaderCellDef
+              class="!bg-gray-50 !text-xs !font-semibold uppercase tracking-wide !text-gray-500">
+            Adoptante
+          </th>
+          <td mat-cell *matCellDef="let mascota">
+            <span class="inline-flex items-center gap-1.5 text-gray-700">
+              <mat-icon class="!h-4 !w-4 !text-[16px] text-gray-400">
+                {{ mascota.idAdoptante === ID_REFUGIO ? 'home_work' : 'person' }}
+              </mat-icon>
+              {{ nombreAdoptante(mascota.idAdoptante) }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Estado -->
+        <ng-container matColumnDef="estado">
+          <th mat-header-cell *matHeaderCellDef
+              class="!bg-gray-50 !text-xs !font-semibold uppercase tracking-wide !text-gray-500">
+            Estado
+          </th>
+          <td mat-cell *matCellDef="let mascota">
+            <span class="rounded-full px-2.5 py-1 text-xs font-medium"
+                  [class]="claseEstado(mascota)">
+              {{ nombreEstado(mascota) }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Acciones -->
+        <ng-container matColumnDef="acciones">
+          <th mat-header-cell *matHeaderCellDef
+              class="!bg-gray-50 !text-xs !font-semibold uppercase tracking-wide !text-gray-500">
+            Acciones
+          </th>
+          <td mat-cell *matCellDef="let mascota">
+            <div class="flex items-center gap-1">
+              @if (mascota.estado !== 0 && mascota.idAdoptante === ID_REFUGIO) {
+                @if (sesionActiva) {
+                  <button mat-stroked-button type="button" (click)="adoptar(mascota)">
+                    <mat-icon>favorite</mat-icon>
+                    Adoptar
+                  </button>
+                } @else {
+                  <a mat-stroked-button routerLink="/app/login-comp">Iniciar sesión</a>
+                }
+              }
+              <button mat-icon-button type="button" matTooltip="Editar" aria-label="Editar"
+                      (click)="seleccionarEditar(mascota)">
+                <mat-icon class="!text-gray-500">edit</mat-icon>
+              </button>
+              <button mat-icon-button type="button" matTooltip="Eliminar" aria-label="Eliminar"
+                      (click)="eliminar(mascota)">
+                <mat-icon class="!text-gray-500 hover:!text-red-600">delete</mat-icon>
+              </button>
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+        <tr mat-row *matRowDef="let row; columns: columnas"
+            class="transition-colors hover:bg-gray-50"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell p-8 text-center text-gray-500" [attr.colspan]="columnas.length">
+            No hay mascotas que coincidan con la búsqueda.
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <mat-paginator class="border-t border-gray-100"
+                   [pageSize]="5"
+                   [pageSizeOptions]="[5, 10, 20]"
+                   showFirstLastButtons>
+    </mat-paginator>
+  </div>
+</div>
+
+<!-- ============ Diálogo: formulario crear / editar ============ -->
+<ng-template #dialogForm>
+  <form #form="ngForm" (ngSubmit)="onSubmit(form)" novalidate>
+
+    <h2 mat-dialog-title>{{ editando ? 'Editar mascota' : 'Nueva mascota' }}</h2>
+
+    <mat-dialog-content class="!pt-2">
+
+      @if (mascotaForm.urlImagen) {
+        <img [src]="mascotaForm.urlImagen" [alt]="mascotaForm.nombre"
+             class="mb-4 h-44 w-full rounded-xl object-cover" />
+      }
+
+      <div class="grid grid-cols-1 gap-x-3 sm:grid-cols-2">
+
+        <mat-form-field appearance="outline" class="sm:col-span-2">
+          <mat-label>Nombre</mat-label>
+          <input matInput name="nombre" [(ngModel)]="mascotaForm.nombre"
+                 required maxlength="100" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Especie</mat-label>
+          <mat-select name="especie" [(ngModel)]="mascotaForm.especie" required>
+            @for (especie of especies; track especie) {
+              <mat-option [value]="especie">{{ especie }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Raza</mat-label>
+          <input matInput name="raza" [(ngModel)]="mascotaForm.raza" maxlength="100" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Edad (años)</mat-label>
+          <input matInput type="number" name="edad" [(ngModel)]="mascotaForm.edad"
+                 min="0" max="999" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Sexo</mat-label>
+          <mat-select name="sexo" [(ngModel)]="mascotaForm.sexo" required>
+            @for (sexo of sexos; track sexo.valor) {
+              <mat-option [value]="sexo.valor">{{ sexo.nombre }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="sm:col-span-2">
+          <mat-label>URL de imagen</mat-label>
+          <input matInput type="url" name="urlImagen" [(ngModel)]="mascotaForm.urlImagen"
+                 maxlength="500" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="sm:col-span-2">
+          <mat-label>Asignar a</mat-label>
+          <mat-select name="idAdoptante" [(ngModel)]="mascotaForm.idAdoptante" required>
+            <mat-option [value]="null" disabled>Selecciona un adoptante</mat-option>
+            @for (adoptante of adoptantes; track adoptante.id) {
+              <mat-option [value]="adoptante.id">
+                {{ adoptante.nombre }}{{ adoptante.correo ? ' · ' + adoptante.correo : '' }}
+              </mat-option>
+            }
+          </mat-select>
+          <mat-hint>
+            @if (adoptantes.length === 0) {
+              No hay adoptantes disponibles
+            } @else if (mascotaForm.idAdoptante === null) {
+              Selecciona un adoptante
+            } @else if (mascotaForm.idAdoptante === ID_REFUGIO) {
+              Quedará disponible para adopción en el refugio
+            } @else {
+              Quedará asignada a este adoptante
+            }
+          </mat-hint>
+        </mat-form-field>
+
+      </div>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end" class="!px-6 !pb-4">
+      <button mat-stroked-button type="button" (click)="cerrarDialog()">Cancelar</button>
+      <button mat-flat-button type="submit">{{ editando ? 'Actualizar' : 'Guardar' }}</button>
+    </mat-dialog-actions>
+
+  </form>
+</ng-template>
