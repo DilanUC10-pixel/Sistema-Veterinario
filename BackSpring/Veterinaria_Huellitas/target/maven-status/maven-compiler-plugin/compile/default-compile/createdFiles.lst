@@ -1,0 +1,4 @@
+com\inube\Veterinaria_Huellitas\controller\ChipRastreoAplicadoController.class
+com\inube\Veterinaria_Huellitas\model\ChipRastreoAplicadoModel.class
+com\inube\Veterinaria_Huellitas\repository\ChipRastreoAplicadoRepository.class
+com\inube\Veterinaria_Huellitas\service\ChipRastreoAplicadoService.class
