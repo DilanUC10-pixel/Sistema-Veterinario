@@ -1,0 +1,12 @@
+{
+  "routes": {
+    "/app/adoptantes-comp": {},
+    "/app/chips-comp": {},
+    "/app/dashboard-comp": {},
+    "/app/home-comp": {},
+    "/app/login-comp": {},
+    "/app/mascotas-comp": {},
+    "/app/registro-comp": {},
+    "/app/vacunas-comp": {}
+  }
+}
