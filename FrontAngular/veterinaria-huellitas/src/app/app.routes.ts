@@ -43,6 +43,13 @@ export const routes: Routes = [
           import('./components/mascotas-comp/mascotas-comp').then((m) => m.MascotasComp),
       },
       {
+        path: 'citas-seguimiento-comp',
+        loadComponent: () =>
+          import('./components/citas-seguimiento-comp/citas-seguimiento-comp').then(
+            (m) => m.CitasSeguimientoComp,
+          ),
+      },
+      {
         path: 'vacunas-comp',
         loadComponent: () =>
           import('./components/vacunas-comp/vacunas-comp').then((m) => m.VacunasComp),

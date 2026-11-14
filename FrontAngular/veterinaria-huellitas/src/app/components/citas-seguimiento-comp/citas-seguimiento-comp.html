@@ -1,0 +1,145 @@
+<main class="citas-page">
+  <header class="page-header">
+    <div>
+      <h1>Citas de seguimiento</h1>
+      <p>Registra y consulta el seguimiento de tus mascotas.</p>
+    </div>
+  </header>
+
+  <p class="feedback success" *ngIf="mensaje" role="status">{{ mensaje }}</p>
+  <p class="feedback error" *ngIf="error" role="alert">{{ error }}</p>
+
+  <section class="panel">
+    <h2>{{ idEnEdicion === null ? 'Registrar cita' : 'Editar cita' }}</h2>
+    <form #citaForm="ngForm" (ngSubmit)="guardar()">
+      <label *ngIf="idEnEdicion === null">
+        Mascota
+        <select
+          name="idMascota"
+          [(ngModel)]="cita.IDMASCOTA"
+          required
+        >
+          <option [ngValue]="0" disabled>Selecciona una mascota</option>
+          <option *ngFor="let mascota of mascotas" [ngValue]="mascota.id">
+            {{ mascota.nombre }}
+          </option>
+        </select>
+      </label>
+      <label *ngIf="idEnEdicion === null">
+        Fecha y hora
+        <input
+          type="datetime-local"
+          name="fechaCita"
+          [(ngModel)]="cita.FECHACITA"
+          required
+        />
+      </label>
+      <label *ngIf="idEnEdicion === null">
+        Motivo
+        <input
+          type="text"
+          name="motivo"
+          [(ngModel)]="cita.motivo"
+          maxlength="250"
+          required
+        />
+      </label>
+      <label class="wide" *ngIf="idEnEdicion === null">
+        Observaciones
+        <textarea
+          name="observaciones"
+          [(ngModel)]="cita.observaciones"
+          rows="3"
+          maxlength="1000"
+        ></textarea>
+      </label>
+      <label *ngIf="idEnEdicion !== null">
+        Estado de la cita
+        <select name="estado" [(ngModel)]="cita.estado" required>
+          <option [ngValue]="0">Cancelada</option>
+          <option [ngValue]="1">Programada</option>
+          <option [ngValue]="2">En proceso</option>
+          <option [ngValue]="3">Completada</option>
+        </select>
+      </label>
+      <div class="form-actions wide">
+        <button type="submit" [disabled]="citaForm.invalid">
+          {{ idEnEdicion === null ? 'Registrar cita' : 'Guardar estado' }}
+        </button>
+        <button
+          class="secondary"
+          type="button"
+          *ngIf="idEnEdicion !== null"
+          (click)="cancelarEdicion()"
+        >
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <section class="panel">
+    <div class="list-header">
+      <h2>Citas registradas</h2>
+      <form class="filter" (ngSubmit)="filtrarPorMascota()">
+        <label>
+          Filtrar por mascota
+          <select
+            name="filtroMascota"
+            [(ngModel)]="idMascotaFiltro"
+          >
+            <option [ngValue]="null">Todas las mascotas</option>
+            <option *ngFor="let mascota of mascotas" [ngValue]="mascota.id">
+              {{ mascota.nombre }}
+            </option>
+          </select>
+        </label>
+        <button type="submit">Filtrar</button>
+        <button class="secondary" type="button" (click)="idMascotaFiltro = null; listar()">
+          Ver todas
+        </button>
+      </form>
+    </div>
+
+    <p *ngIf="cargando">Cargando citas...</p>
+    <div class="table-wrap" *ngIf="!cargando">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Mascota</th>
+            <th>Fecha</th>
+            <th>Motivo</th>
+            <th>Observaciones</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of citas">
+            <td>{{ obtenerId(item) ?? '—' }}</td>
+            <td>{{ nombreMascota(item.IDMASCOTA) }}</td>
+            <td>{{ item.FECHACITA | date: 'short' }}</td>
+            <td>{{ item.motivo }}</td>
+            <td>{{ item.observaciones || '—' }}</td>
+            <td>{{ nombreEstado(item.estado) }}</td>
+            <td class="actions">
+              <button type="button" (click)="editar(item)">Editar</button>
+              <button
+                class="danger"
+                type="button"
+                (click)="cancelar(item)"
+                [disabled]="item.estado === 0"
+              >
+                Cancelar
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="citas.length === 0">
+            <td class="empty" colspan="7">No hay citas de seguimiento para mostrar.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>

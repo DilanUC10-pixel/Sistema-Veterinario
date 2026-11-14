@@ -30,6 +30,7 @@ export class App {
     { label: 'Dashboard', icon: 'dashboard', ruta: '/app/dashboard-comp' },
     { label: 'Adoptantes', icon: 'groups', ruta: '/app/adoptantes-comp' },
     { label: 'Mascotas', icon: 'pets', ruta: '/app/mascotas-comp' },
+    { label: 'Citas de seguimiento', icon: 'event_repeat', ruta: '/app/citas-seguimiento-comp' },
     { label: 'Vacunas', icon: 'vaccines', ruta: '/app/vacunas-comp' },
     { label: 'Chips de rastreo', icon: 'location_searching', ruta: '/app/chips-comp' },
   ];

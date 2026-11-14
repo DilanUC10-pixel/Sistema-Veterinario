@@ -329,11 +329,24 @@
                 }
               </mat-form-field>
 
+              <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Próxima cita (opcional)</mat-label>
+                <input
+                  matInput
+                  type="datetime-local"
+                  name="fechaProximaCita"
+                  [(ngModel)]="aplicacionForm.fechaProximaCita"
+                />
+                <mat-icon matSuffix>event</mat-icon>
+                <mat-hint>Si indicas una fecha, se creará una cita programada para esta mascota.</mat-hint>
+              </mat-form-field>
+
               <div class="rounded-xl border border-blue-100 bg-blue-50 p-3">
                 <div class="flex items-start gap-2">
                   <mat-icon class="!text-blue-600">info</mat-icon>
                   <p class="text-xs leading-relaxed text-blue-800">
                     Se aplicará una unidad y se descontará del inventario automáticamente.
+                    Puedes programar aquí la próxima cita de seguimiento.
                   </p>
                 </div>
               </div>

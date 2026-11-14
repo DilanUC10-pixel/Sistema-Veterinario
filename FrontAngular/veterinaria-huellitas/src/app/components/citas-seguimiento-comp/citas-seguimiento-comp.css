@@ -1,0 +1,165 @@
+.citas-page {
+  display: grid;
+  gap: 1.25rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.page-header h1,
+.panel h2 {
+  margin: 0;
+}
+
+.page-header p {
+  margin: 0.4rem 0 0;
+  color: #64748b;
+}
+
+.panel {
+  padding: 1.25rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  background: #fff;
+  box-shadow: 0 2px 8px rgb(15 23 42 / 5%);
+}
+
+form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+label {
+  display: grid;
+  gap: 0.4rem;
+  font-weight: 600;
+}
+
+input,
+textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.4rem;
+  font: inherit;
+}
+
+.wide {
+  grid-column: 1 / -1;
+}
+
+.form-actions,
+.filter,
+.actions {
+  display: flex;
+  align-items: end;
+  gap: 0.5rem;
+}
+
+button {
+  padding: 0.6rem 0.85rem;
+  border: 0;
+  border-radius: 0.4rem;
+  background: #0f766e;
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+button.secondary {
+  background: #475569;
+}
+
+button.danger {
+  background: #b91c1c;
+}
+
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 1rem;
+}
+
+.filter {
+  margin: 0;
+}
+
+.filter label {
+  min-width: 12rem;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  margin-top: 1rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #e2e8f0;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  color: #334155;
+  background: #f8fafc;
+}
+
+.actions {
+  align-items: center;
+  white-space: nowrap;
+}
+
+.empty {
+  padding: 1.5rem;
+  color: #64748b;
+  text-align: center;
+}
+
+.feedback {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border-radius: 0.4rem;
+}
+
+.feedback.success {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.feedback.error {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+@media (max-width: 700px) {
+  .citas-page {
+    padding: 1rem;
+  }
+
+  form,
+  .list-header {
+    grid-template-columns: 1fr;
+    display: grid;
+  }
+
+  .filter {
+    align-items: stretch;
+    flex-wrap: wrap;
+  }
+}

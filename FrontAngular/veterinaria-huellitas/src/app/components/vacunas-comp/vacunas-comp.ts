@@ -11,6 +11,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { forkJoin } from 'rxjs';
 import Swal from 'sweetalert2';
+import { CitaSeguimientoService } from '../../services/cita-seguimiento-service';
 import { MascotasService } from '../../services/mascotas-service';
 import { VacunasService } from '../../services/vacunas-service';
 
@@ -44,6 +45,7 @@ interface VacunaStockForm {
 interface AplicacionForm {
   idMascota: number | null;
   idVacuna: number | null;
+  fechaProximaCita: string;
 }
 
 @Component({
@@ -66,6 +68,7 @@ interface AplicacionForm {
 export class VacunasComp implements OnInit {
   private readonly platformId = inject(PLATFORM_ID);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly citaSeguimientoService = inject(CitaSeguimientoService);
   private readonly vacunasService = inject(VacunasService);
   private readonly mascotasService = inject(MascotasService);
 
@@ -74,7 +77,11 @@ export class VacunasComp implements OnInit {
   private todasLasMascotas: MascotaOption[] = [];
   historial: VacunaAplicada[] = [];
   vacunaForm = this.formularioStockVacio();
-  aplicacionForm: AplicacionForm = { idMascota: null, idVacuna: null };
+  aplicacionForm: AplicacionForm = {
+    idMascota: null,
+    idVacuna: null,
+    fechaProximaCita: '',
+  };
   editandoStock = false;
   cargandoHistorial = false;
   columnasStock = ['nombre', 'descripcion', 'stock', 'acciones'];
@@ -248,6 +255,15 @@ export class VacunasComp implements OnInit {
       Swal.fire('Error', 'No hay existencias disponibles de esta vacuna.', 'error');
       return;
     }
+    const fechaProximaCita = this.aplicacionForm.fechaProximaCita;
+    if (
+      fechaProximaCita &&
+      (!Number.isFinite(new Date(fechaProximaCita).getTime()) ||
+        new Date(fechaProximaCita).getTime() <= Date.now())
+    ) {
+      Swal.fire('Error', 'La próxima cita debe tener una fecha y hora futuras válidas.', 'error');
+      return;
+    }
 
     this.vacunasService.aplicarVacuna({ idMascota, idVacuna, cantidad: 1 }).subscribe({
       next: (respuesta) => {
@@ -255,14 +271,56 @@ export class VacunasComp implements OnInit {
           Swal.fire('Error', this.mensajeRespuesta(respuesta, 'No se pudo registrar la aplicación.'), 'error');
           return;
         }
+        if (fechaProximaCita) {
+          this.citaSeguimientoService
+            .guardar({
+              IDMASCOTA: idMascota,
+              FECHACITA: fechaProximaCita,
+              motivo: `Refuerzo de vacuna: ${vacuna.nombre}`,
+              observaciones: `Cita programada al aplicar la vacuna ${vacuna.nombre}.`,
+              estado: 1,
+            })
+            .subscribe({
+              next: (respuestaCita) => {
+                this.finalizarAplicacion(idMascota, form);
+                if (this.falloRespuesta(respuestaCita)) {
+                  Swal.fire(
+                    'Vacuna aplicada',
+                    `La vacuna se aplicó, pero no se pudo programar la próxima cita: ${this.mensajeRespuesta(respuestaCita, 'Error al guardar la cita.')}`,
+                    'warning',
+                  );
+                  return;
+                }
+                Swal.fire(
+                  'Vacuna aplicada',
+                  `Se actualizó el stock y el historial. Próxima cita programada para ${new Date(fechaProximaCita).toLocaleString()}.`,
+                  'success',
+                );
+              },
+              error: (error) => {
+                this.finalizarAplicacion(idMascota, form);
+                Swal.fire(
+                  'Vacuna aplicada',
+                  `La vacuna se aplicó, pero no se pudo programar la próxima cita: ${this.detalleError(error, 'Error al guardar la cita.')}`,
+                  'warning',
+                );
+              },
+            });
+          return;
+        }
+
+        this.finalizarAplicacion(idMascota, form);
         Swal.fire('Vacuna aplicada', 'Se actualizó el stock y el historial de la mascota.', 'success');
-        this.aplicacionForm = { idMascota, idVacuna: null };
-        form.resetForm(this.aplicacionForm);
-        this.listarStock();
-        this.listarHistorial();
       },
       error: (error) => this.mostrarError(error, 'No se pudo registrar la aplicación.'),
     });
+  }
+
+  private finalizarAplicacion(idMascota: number, form: NgForm): void {
+    this.aplicacionForm = { idMascota, idVacuna: null, fechaProximaCita: '' };
+    form.resetForm(this.aplicacionForm);
+    this.listarStock();
+    this.listarHistorial();
   }
 
   limpiarStockForm(form?: NgForm): void {
@@ -341,11 +399,15 @@ export class VacunasComp implements OnInit {
   }
 
   private mostrarError(error: unknown, predeterminado: string): void {
+    Swal.fire('Error', this.detalleError(error, predeterminado), 'error');
+  }
+
+  private detalleError(error: unknown, predeterminado: string): string {
     const detalle = error && typeof error === 'object' ? error as Record<string, unknown> : {};
     const cuerpo = detalle['error'] && typeof detalle['error'] === 'object'
       ? detalle['error'] as Record<string, unknown>
       : {};
-    Swal.fire('Error', String(cuerpo['mensaje'] ?? detalle['message'] ?? predeterminado), 'error');
+    return String(cuerpo['mensaje'] ?? cuerpo['message'] ?? detalle['message'] ?? predeterminado);
   }
 
   private formularioStockVacio(): VacunaStockForm {

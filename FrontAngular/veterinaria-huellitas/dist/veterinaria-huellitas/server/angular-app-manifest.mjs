@@ -20,72 +20,86 @@ export default {
   {
     "renderMode": 2,
     "preload": [
-      "chunk-Dics0BTa.js"
+      "chunk-3QxRTkKt.js"
     ],
     "route": "/app/home-comp"
   },
   {
     "renderMode": 2,
     "preload": [
-      "chunk-CKuhngjR.js"
+      "chunk-DTtZ03y3.js"
     ],
     "route": "/app/login-comp"
   },
   {
     "renderMode": 2,
     "preload": [
-      "chunk-QuiaJnDj.js"
+      "chunk-D76LD9yP.js"
     ],
     "route": "/app/registro-comp"
   },
   {
     "renderMode": 2,
     "preload": [
-      "chunk-PfR-oZbl.js",
-      "chunk-LjDoeR-I.js",
-      "chunk-6nDp_tjJ.js"
+      "chunk-BGM1tr0M.js",
+      "chunk-COYo1lee.js",
+      "chunk-D8gjTy05.js"
     ],
     "route": "/app/dashboard-comp"
   },
   {
     "renderMode": 2,
     "preload": [
-      "chunk-FL6CXeNe.js",
-      "chunk-C5lX3jaS.js",
-      "chunk-DuOOq3ny.js",
-      "chunk-6nDp_tjJ.js"
+      "chunk-BieezKbZ.js",
+      "chunk-dCY1hem_.js",
+      "chunk-CmNIamT-.js",
+      "chunk-D8gjTy05.js",
+      "chunk-Cfgjyqhe.js"
     ],
     "route": "/app/adoptantes-comp"
   },
   {
     "renderMode": 2,
     "preload": [
-      "chunk-C_O4DV5S.js",
-      "chunk-C5lX3jaS.js",
-      "chunk-DuOOq3ny.js",
-      "chunk-6nDp_tjJ.js"
+      "chunk-DS-c-hS8.js",
+      "chunk-dCY1hem_.js",
+      "chunk-CmNIamT-.js",
+      "chunk-D8gjTy05.js",
+      "chunk-Cfgjyqhe.js"
     ],
     "route": "/app/mascotas-comp"
   },
   {
     "renderMode": 2,
     "preload": [
-      "chunk-Dr_IZylN.js",
-      "chunk-C7jJO2zN.js",
-      "chunk-LjDoeR-I.js",
-      "chunk-DuOOq3ny.js",
-      "chunk-6nDp_tjJ.js"
+      "chunk-C5VRhVlU.js",
+      "chunk-DRbQLFVu.js",
+      "chunk-Cfgjyqhe.js"
+    ],
+    "route": "/app/citas-seguimiento-comp"
+  },
+  {
+    "renderMode": 2,
+    "preload": [
+      "chunk-LPumDLjo.js",
+      "chunk-CgBqip1f.js",
+      "chunk-COYo1lee.js",
+      "chunk-CmNIamT-.js",
+      "chunk-D8gjTy05.js",
+      "chunk-DRbQLFVu.js",
+      "chunk-Cfgjyqhe.js"
     ],
     "route": "/app/vacunas-comp"
   },
   {
     "renderMode": 2,
     "preload": [
-      "chunk-DJCx3Y_e.js",
-      "chunk-C7jJO2zN.js",
-      "chunk-LjDoeR-I.js",
-      "chunk-DuOOq3ny.js",
-      "chunk-6nDp_tjJ.js"
+      "chunk-BfWF8c5N.js",
+      "chunk-CgBqip1f.js",
+      "chunk-COYo1lee.js",
+      "chunk-CmNIamT-.js",
+      "chunk-D8gjTy05.js",
+      "chunk-Cfgjyqhe.js"
     ],
     "route": "/app/chips-comp"
   },
@@ -98,15 +112,16 @@ export default {
 ],
   entryPointToBrowserMapping: undefined,
   assets: {
-    "index.csr.html": {size: 34312, hash: "f2b38f86ecd32fd6", text: () => import("./assets-chunks/index_csr_html.mjs").then(m => m.default)},
-    "index.server.html": {size: 19015, hash: "4a0daf4051e612e5", text: () => import("./assets-chunks/index_server_html.mjs").then(m => m.default)},
-    "app/login-comp/index.html": {size: 46145, hash: "d511d590404331ce", text: () => import("./assets-chunks/app_login-comp_index_html.mjs").then(m => m.default)},
-    "app/home-comp/index.html": {size: 47775, hash: "9c5bf28ee47c20e1", text: () => import("./assets-chunks/app_home-comp_index_html.mjs").then(m => m.default)},
-    "app/registro-comp/index.html": {size: 47931, hash: "d31d6e61bfbddf02", text: () => import("./assets-chunks/app_registro-comp_index_html.mjs").then(m => m.default)},
-    "app/dashboard-comp/index.html": {size: 62141, hash: "d72cd369ba5555c5", text: () => import("./assets-chunks/app_dashboard-comp_index_html.mjs").then(m => m.default)},
-    "app/mascotas-comp/index.html": {size: 145444, hash: "56a6c10ceaf30677", text: () => import("./assets-chunks/app_mascotas-comp_index_html.mjs").then(m => m.default)},
-    "app/adoptantes-comp/index.html": {size: 143892, hash: "a97c1806b40af11b", text: () => import("./assets-chunks/app_adoptantes-comp_index_html.mjs").then(m => m.default)},
-    "app/chips-comp/index.html": {size: 157148, hash: "940c7a9d5132c761", text: () => import("./assets-chunks/app_chips-comp_index_html.mjs").then(m => m.default)},
-    "app/vacunas-comp/index.html": {size: 147920, hash: "f5b237f9d04e5cd2", text: () => import("./assets-chunks/app_vacunas-comp_index_html.mjs").then(m => m.default)}
+    "index.csr.html": {size: 34363, hash: "b861c07b09475798", text: () => import("./assets-chunks/index_csr_html.mjs").then(m => m.default)},
+    "index.server.html": {size: 19066, hash: "ed5c1ab0bd771489", text: () => import("./assets-chunks/index_server_html.mjs").then(m => m.default)},
+    "app/registro-comp/index.html": {size: 47982, hash: "96102c1d868110de", text: () => import("./assets-chunks/app_registro-comp_index_html.mjs").then(m => m.default)},
+    "app/home-comp/index.html": {size: 47826, hash: "8e305ef29f7b5d0c", text: () => import("./assets-chunks/app_home-comp_index_html.mjs").then(m => m.default)},
+    "app/login-comp/index.html": {size: 46196, hash: "18d434ada70d846b", text: () => import("./assets-chunks/app_login-comp_index_html.mjs").then(m => m.default)},
+    "app/dashboard-comp/index.html": {size: 62192, hash: "b5803e3bb958b3bf", text: () => import("./assets-chunks/app_dashboard-comp_index_html.mjs").then(m => m.default)},
+    "app/citas-seguimiento-comp/index.html": {size: 49317, hash: "da4b1638765e531f", text: () => import("./assets-chunks/app_citas-seguimiento-comp_index_html.mjs").then(m => m.default)},
+    "app/adoptantes-comp/index.html": {size: 143995, hash: "40857b0b52494522", text: () => import("./assets-chunks/app_adoptantes-comp_index_html.mjs").then(m => m.default)},
+    "app/mascotas-comp/index.html": {size: 145547, hash: "6cbd635faa5fda99", text: () => import("./assets-chunks/app_mascotas-comp_index_html.mjs").then(m => m.default)},
+    "app/chips-comp/index.html": {size: 157251, hash: "746c2926f1cdd3b0", text: () => import("./assets-chunks/app_chips-comp_index_html.mjs").then(m => m.default)},
+    "app/vacunas-comp/index.html": {size: 148106, hash: "e804d887c7a75a3e", text: () => import("./assets-chunks/app_vacunas-comp_index_html.mjs").then(m => m.default)}
   },
 };
